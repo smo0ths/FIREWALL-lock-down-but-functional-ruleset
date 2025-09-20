@@ -1,15 +1,17 @@
 # LDFRS (PowerShell script) v0.0.0
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
-##### Remember to set ALLOW to the [BLOCK IF UPDATES DISABLED] section in Rules Panel if updating and [BLOCK IF NOT USING] for other stuff
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) with this
 ##### the (games may need this) 2 rules need testing just enable them if problematic
 #### Malwarebytes Windows Firewall Control settings (from main panel):
-* ##### *Profiles: medium*
-* ##### *Notifications: check display, set close notification to 999, uncheck all but use generic block rules on page*
-* ##### *Options: check shell/start*
-* ##### *Rules: check outbound/domain/private/public*
-* ##### *Security: Check secure profile/rules and delete unauthorized rules*
+* ##### Profiles: *medium*
+* ##### Notifications: *check display, set close notification to 999, uncheck all but use generic block rules on page*
+* ##### Options: *check shell/start*
+* ##### Rules: *check outbound/domain/private/public*
+* ##### Security: *Check secure profile/rules, delete unauthorized rules, press - on all other authorized groups but WFC and temp rules*
+#### Rules Panel: 
+* ##### delete rules you didn't make
+* ##### Remember to set ALLOW to the [BLOCK IF UPDATES DISABLED] section in Rules Panel if updating and [BLOCK IF NOT USING] for other stuff
 ## then copy/paste in PowerShell:
 
 ```python
