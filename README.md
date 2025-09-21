@@ -2,6 +2,7 @@
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) with this
+##### and use [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
 ##### the (games may need this) 2 rules need testing just enable them if problematic
 #### Malwarebytes Windows Firewall Control settings (from main panel):
 * ##### Profiles: *medium*
