@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.0.0
+# LDFRS (PowerShell script) v0.0.1
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) with this
@@ -29,11 +29,11 @@ $rules = @(
 @{Name='✔️ Allow ICMPv4 Out EchoRequest (Ping request)';Protocol='1';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='8'},
 @{Name='✔️ Allow svchost Out HTTP TCP Any 80 (General access)';Program='C:\Windows\System32\svchost.exe';Protocol='TCP';LPort='*';RPort=80;Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow svchost Out HTTPS TCP Any 443 (General access)';Program='C:\Windows\System32\svchost.exe';Protocol='TCP';LPort='*';RPort=443;Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ TEMP BLOCK NCSI Probe Dnscache (games may need this)';Service='Dnscache';Protocol='TCP';LPort='*';RPort=443;RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ TEMP BLOCK NCSI Probe svchost.exe (games may need this)';Program='C:\Windows\System32\svchost.exe';Protocol='TCP';LPort='*';RPort=443;RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ TEMP BLOCK NCSI Support netprofm (Network List Service)';Service='netprofm';Protocol='TCP';LPort='*';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ TEMP BLOCK NCSI Support Wcmsvc (HTTP Probe)';Service='Wcmsvc';Protocol='TCP';LPort='*';RPort=80;Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ TEMP BLOCK W32Time (Time sync)';Service='W32Time';Protocol='UDP';LPort=123;RPort=123;Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] Probe Dnscache';Service='Dnscache';Protocol='TCP';LPort='*';RPort=443;RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] Probe svchost.exe';Program='C:\Windows\System32\svchost.exe';Protocol='TCP';LPort='*';RPort=443;RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] Support netprofm (Network List Service)';Service='netprofm';Protocol='TCP';LPort='*';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] NCSI Support Wcmsvc (HTTP Probe)';Service='Wcmsvc';Protocol='TCP';LPort='*';RPort=80;Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] W32Time (Time sync)';Service='W32Time';Protocol='UDP';LPort=123;RPort=123;Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Appinfo';Service='Appinfo';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] appmodel';Service='appmodel';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] BDESVC';Service='BDESVC';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
