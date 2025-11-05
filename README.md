@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.0.2
+# LDFRS (PowerShell script) v0.0.3
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) with this
@@ -21,14 +21,20 @@ $patterns='*✔️*','*✖*'; Get-NetFirewallRule -DisplayName $patterns -EA 0 |
 $rules = @(
 @{Name='✔️ Allow DHCP In UDP 68 67 (Server response)';Service='Dhcp';Protocol='UDP';LPort=68;RPort=67;Action='Allow';Profile='Domain,Private,Public';Direction='Inbound'},
 @{Name='✔️ Allow DHCP Out UDP 68 67 (Client request)';Service='Dhcp';Protocol='UDP';LPort=68;RPort=67;Action='Allow';Profile='Domain,Private,Public';Direction='Outbound'},
+@{Name='✔️ Allow DHCPv6 In UDP (Server response)';Service='Dhcp';Program='C:\Windows\System32\svchost.exe';Protocol='UDP';LPort=546;RPort=547;Action='Allow';Profile='Any';Direction='Inbound'},
+@{Name='✔️ Allow DHCPv6 Out UDP (Client request)';Service='Dhcp';Program='C:\Windows\System32\svchost.exe';Protocol='UDP';LPort=546;RPort=547;RAddr='ff02::1:2';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow DNS Out TCP Any 53 (Fallback)';Service='Dnscache';Protocol='TCP';LPort='*';RPort=53;Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow DNS Out UDP Any 53 (Resolution)';Service='Dnscache';Protocol='UDP';LPort='*';RPort=53;Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow HTTP Out TCP Any 80 (Web traffic)';Protocol='TCP';LPort='*';RPort=80;Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow HTTPS Out TCP Any 443 (Web traffic)';Protocol='TCP';LPort='*';RPort=443;Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow ICMPv4 In EchoReply (Ping reply)';Protocol='1';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='0'},
 @{Name='✔️ Allow ICMPv4 Out EchoRequest (Ping request)';Protocol='1';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='8'},
+@{Name='✔️ Allow ICMPv6 INBOUND (IPv6 Control Messaging)';Protocol='58';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='Any'},
+@{Name='✔️ Allow ICMPv6 OUTBOUND (IPv6 Control Messaging)';Protocol='58';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='Any'},
 @{Name='✔️ Allow svchost Out HTTP TCP Any 80 (General access)';Program='C:\Windows\System32\svchost.exe';Protocol='TCP';LPort='*';RPort=80;Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow svchost Out HTTPS TCP Any 443 (General access)';Program='C:\Windows\System32\svchost.exe';Protocol='TCP';LPort='*';RPort=443;Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow Network Profile Helper (Network List Service/Tray Icon)';Service='netprofm';Protocol='TCP';LPort='*';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow Windows Connectivity Checks (NetworkService)';Service='NetworkService';Protocol='TCP';LPort='*';RPort='*';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Appinfo';Service='Appinfo';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] appmodel';Service='appmodel';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] BDESVC';Service='BDESVC';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
@@ -39,8 +45,6 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] DiagTrack (Telemetry Service)';Service='DiagTrack';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Dnscache (mDNS/Local Discovery)';Service='Dnscache';Protocol='UDP';LPort=5353;RPort=5353;Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] EventLog RPC INBOUND';Service='EventLog';Protocol='TCP';LPort=135;Action='Block';Profile='Domain,Private';Direction='Inbound'},
-@{Name='✖ [BLOCK IF NOT USING] ICMPv6 INBOUND (IPv6 Control Messaging)';Protocol='58';Action='Block';Profile='Any';Direction='Inbound';IcmpType='Any'},
-@{Name='✖ [BLOCK IF NOT USING] ICMPv6 OUTBOUND (IPv6 Control Messaging)';Protocol='58';Action='Block';Profile='Any';Direction='Outbound';IcmpType='Any'},
 @{Name='✖ [BLOCK IF NOT USING] IGMP INBOUND (Multicast Group Management)';Protocol='2';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] IGMP OUTBOUND (Multicast Group Management)';Protocol='2';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] IKEEXT';Service='IKEEXT';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
@@ -51,7 +55,6 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] LocalService';Service='LocalService';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] LocalServiceNetworkRestricted';Service='LocalServiceNetworkRestricted';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] NCSI Support Wcmsvc (HTTP Probe)';Service='Wcmsvc';Protocol='TCP';LPort='*';RPort=80;Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] NetworkService';Service='NetworkService';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] osprivacy';Service='osprivacy';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Probe Dnscache';Service='Dnscache';Protocol='TCP';LPort='*';RPort=443;RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Probe svchost.exe';Program='C:\Windows\System32\svchost.exe';Protocol='TCP';LPort='*';RPort=443;RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
@@ -59,7 +62,6 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] SENS';Service='SENS';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] ShellHWDetection';Service='ShellHWDetection';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] spoolsv.exe';Program='C:\Windows\System32\spoolsv.exe';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] Support netprofm (Network List Service)';Service='netprofm';Protocol='TCP';LPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] TermService INBOUND';Service='TermService';Protocol='TCP';LPort=3389;RPort='*';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] Themes';Service='Themes';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] UdkSvcGroup';Service='UdkSvcGroup';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
