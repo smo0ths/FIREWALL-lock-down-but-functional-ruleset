@@ -1,9 +1,8 @@
 # LDFRS (PowerShell script) v0.0.4
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
-##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) with this
-##### and use [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
-##### the (games may need this) 2 rules need testing just enable them if problematic
+##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
+#
 #### Malwarebytes Windows Firewall Control settings (from main panel):
 * ##### Profiles: *medium*
 * ##### Notifications: *check display, set close notification to 999, uncheck all but use generic block rules on page*
@@ -12,9 +11,10 @@
 * ##### Security: *Check secure profile/rules, delete unauthorized rules, press - on all other authorized groups but WFC and temp rules*
 #### Rules Panel: 
 * ##### delete rules you didn't make
-* ##### Remember to set ALLOW to the [BLOCK IF UPDATES DISABLED] section in Rules Panel if updating and [BLOCK IF NOT USING] for other stuff
+* ##### Remember to set ALLOW to the [BLOCK IF UPDATES DISABLED] section in Rules Panel if updating and check [BLOCK IF NOT USING]
+#
 ## then copy/paste in PowerShell:
-
+#
 ```python
 $patterns='*✔️*','*✖*'; Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? Group -eq 'Windows Firewall Control' | Remove-NetFirewallRule
 $rules = @(
