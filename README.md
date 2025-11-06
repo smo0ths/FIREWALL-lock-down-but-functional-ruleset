@@ -16,6 +16,7 @@
 ## then copy/paste in PowerShell:
 #
 ```python
+# lock‑down but functional ruleset LDFRS (PowerShell script)
 $patterns='*✔️*','*✖*'; Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? Group -eq 'Windows Firewall Control' | Remove-NetFirewallRule
 $rules = @(
 @{Name='✔️ Allow DHCP In UDP 68 67 (Server response)';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Domain,Private,Public';Direction='Inbound'},
