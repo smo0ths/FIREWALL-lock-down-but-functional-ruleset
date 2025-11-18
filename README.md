@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.0.9
+# LDFRS (PowerShell script) v0.1.0
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
@@ -8,7 +8,7 @@
 * ##### Notifications: *check display, set close notification to 999, default advanced notifications settings is fine
 * ##### Options: *check shell/start*
 * ##### Rules: *check outbound/domain/private/public*
-* ##### Security: *Check secure rules, delete unauthorized rules (press - on all other authorized groups but WFC and temp rules*)
+* ##### Security: *check secure profile/secure rules, delete unauthorized rules (press - on all other authorized groups but WFC and temp rules*)
 #### Rules Panel: 
 * ##### delete rules you didn't make
 #
@@ -20,7 +20,7 @@
 # lock‑down but functional ruleset LDFRS (PowerShell script)
 $patterns='*✔️*','*✖*'; Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? Group -eq 'Windows Firewall Control' | Remove-NetFirewallRule
 $rules = @(
-@{Name='✔️ Allow DHCP INBOUND UDP 67→68 (Server response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';RAddr='255.255.255.255';Action='Allow';Profile='Domain,Private,Public';Direction='Inbound'},
+@{Name='✔️ Allow DHCP INBOUND UDP 67→68 (Server response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';LAddr='Any';RAddr='255.255.255.255';Action='Allow';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow DHCP OUTBOUND UDP 68→67 (Client request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Domain,Private,Public';Direction='Outbound'},
 @{Name='✔️ Allow DHCPv6 INBOUND UDP 547→546 (Server response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';Action='Allow';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow DHCPv6 OUTBOUND UDP 546→547 (Client request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';RAddr='ff02::1:2';Action='Allow';Profile='Any';Direction='Outbound'},
@@ -61,7 +61,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] rundll32.exe';Program='C:\Windows\System32\rundll32.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] SENS (System Event Notification Service)';Program='C:\Windows\System32\svchost.exe';Service='SENS';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] spoolsv.exe';Program='C:\Windows\System32\spoolsv.exe';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] taskhostw.exe';Program='C:\Windows\System32\taskhostw.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] taskhostw.exe (Windows service host for DLL‑based tasks)';Program='C:\Windows\System32\taskhostw.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] TermService INBOUND (Remote Desktop Services)';Program='C:\Windows\System32\svchost.exe';Service='TermService';Protocol='TCP';LPort='3389';RPort='*';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] TimeBrokerSvc INBOUND';Program='C:\Windows\System32\svchost.exe';Service='TimeBrokerSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Inbound';Enabled='True'},
 @{Name='✖ [BLOCK IF NOT USING] UdkSvcGroup';Program='C:\Windows\System32\svchost.exe';Service='UdkSvcGroup';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
