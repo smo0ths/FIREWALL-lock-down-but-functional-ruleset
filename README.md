@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.1.0
+# LDFRS (PowerShell script) v0.1.1
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
@@ -20,7 +20,7 @@
 # lock‑down but functional ruleset LDFRS (PowerShell script)
 $patterns='*✔️*','*✖*'; Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? Group -eq 'Windows Firewall Control' | Remove-NetFirewallRule
 $rules = @(
-@{Name='✔️ Allow DHCP INBOUND UDP 67→68 (Server response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';LAddr='Any';RAddr='255.255.255.255';Action='Allow';Profile='Any';Direction='Inbound'},
+@{Name='✔️ Allow DHCP INBOUND UDP 67→68 (Server response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';LAddr='Any';RAddr='Any';Action='Allow';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow DHCP OUTBOUND UDP 68→67 (Client request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Domain,Private,Public';Direction='Outbound'},
 @{Name='✔️ Allow DHCPv6 INBOUND UDP 547→546 (Server response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';Action='Allow';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow DHCPv6 OUTBOUND UDP 546→547 (Client request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';RAddr='ff02::1:2';Action='Allow';Profile='Any';Direction='Outbound'},
