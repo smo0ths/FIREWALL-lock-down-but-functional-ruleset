@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.1.4
+# LDFRS (PowerShell script) v0.1.5
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
@@ -12,7 +12,9 @@
 #### Rules Panel: 
 * ##### block the rules you don't want
 #
+* ##### Switch to secure rules if you dont want apps creating rules*
 * ##### Remember to set ALLOW to the [BLOCK IF UPDATES DISABLED] and [BLOCK IF NOT USING] if needed
+* ##### right click block apps before opening them
 #
 ## then copy/paste in PowerShell:
 #
@@ -20,19 +22,21 @@
 # lock‑down but functional ruleset LDFRS (PowerShell script)
 $patterns='*✔️*','*✖*'; Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? Group -eq 'Windows Firewall Control' | Remove-NetFirewallRule
 $rules = @(
-@{Name='✔️ Allow DHCP INBOUND UDP (Server response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';LAddr='Any';RAddr='Any';Action='Allow';Profile='Any';Direction='Inbound'},
-@{Name='✔️ Allow DHCP OUTBOUND UDP (Client request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Domain,Private,Public';Direction='Outbound'},
-@{Name='✔️ Allow DHCPv6 INBOUND UDP (Server response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';Action='Allow';Profile='Any';Direction='Inbound'},
-@{Name='✔️ Allow DHCPv6 OUTBOUND UDP (Client request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';RAddr='ff02::1:2';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✖ Allow ALL INBOUND (Default Deny)';Program='Any';Protocol='Any';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Inbound'},
+@{Name='✔️ Allow DHCPv4 BROADCAST (Client Discover/Offer)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';LAddr='0.0.0.0';RAddr='255.255.255.255';Action='Allow';Profile='Any';Direction='Inbound'},
+@{Name='✔️ Allow DHCPv4 INBOUND (Server Response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Any';Direction='Inbound'},
+@{Name='✔️ Allow DHCPv4 OUTBOUND (Client Request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow DHCPv6 INBOUND (Server Response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';Action='Allow';Profile='Any';Direction='Inbound'},
+@{Name='✔️ Allow DHCPv6 OUTBOUND (Client Request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';RAddr='ff02::1:2';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow DNS OUTBOUND TCP (Fallback)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';LPort='*';RPort='53';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow DNS OUTBOUND UDP (Resolution)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';LPort='*';RPort='53';Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Allow HTTP/HTTPS OUTBOUND TCP (Web traffic)';Program='Any';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Allow ICMPv4 INBOUND EchoReply (Ping reply)';Program='System';Protocol='1';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='0'},
-@{Name='✔️ Allow ICMPv4 OUTBOUND EchoRequest (Ping request)';Program='System';Protocol='1';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='8'},
-@{Name='✔️ Allow ICMPv6 INBOUND (IPv6 Control Messaging)';Program='System';Protocol='58';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='Any'},
-@{Name='✔️ Allow ICMPv6 OUTBOUND (IPv6 Control Messaging)';Program='System';Protocol='58';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='Any'},
+@{Name='✔️ Allow ICMP(v4/v6) INBOUND (Ping Reply)';Program='System';Protocol='Any';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='0,129'},
+@{Name='✔️ Allow ICMP(v4/v6) OUTBOUND (Ping Request)';Program='System';Protocol='Any';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='8,128'},
 @{Name='✔️ Allow iphlpsvc (IP Helper)';Program='C:\Windows\System32\svchost.exe';Service='iphlpsvc';Protocol='TCP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Allow Network Profile Helper (Network List Service/Tray Icon)';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow Network Profile Helper (encrypted/Network List Service/Tray Icon)';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='TCP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✖ Allow Network Profile Helper (unencrypted/Network List Service/Tray Icon)';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow Web traffic HTTPS OUTBOUND TCP (encrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow Web traffic QUIC OUTBOUND UDP (encrypted)';Program='Any';Protocol='UDP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] AppIdCertStoreCheck.exe (Certificate store consistency check)';Program='C:\Windows\System32\AppIdCertStoreCheck.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] BDESVC (BitLocker Drive Encryption Service)';Program='C:\Windows\System32\svchost.exe';Service='BDESVC';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] CompatTelRunner.exe (Application Experience/Upgrade Assistant/Telemetry)';Program='C:\Windows\System32\CompatTelRunner.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
@@ -51,8 +55,8 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] LanmanServer INBOUND (LAN Session)';Program='C:\Windows\System32\svchost.exe';Service='LanmanServer';Protocol='TCP';LPort='139';RPort='*';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] LanmanServer INBOUND';Program='C:\Windows\System32\svchost.exe';Service='LanmanServer';Protocol='TCP';LPort='445';RPort='*';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] LanmanWorkstation (SMB Client/File Shares)';Program='C:\Windows\System32\svchost.exe';Service='LanmanWorkstation';Protocol='TCP';LPort='*';RPort=@('445','443');RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] Loopback HTTPS Probe (Dnscache)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';LPort='*';RPort='443';RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] Loopback HTTPS Probe (svchost)';Program='C:\Windows\System32\svchost.exe';Protocol='TCP';LPort='*';RPort='443';RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] Loopback HTTPS Probe (Windows diagnostics/Dnscache)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';LPort='*';RPort='443';RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] Loopback HTTPS Probe (Windows diagnostics/svchost)';Program='C:\Windows\System32\svchost.exe';Protocol='TCP';LPort='*';RPort='443';RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] mpcmdrun.exe (Microsoft Malware Protection Command Line Utility)';Program='C:\program files\windows defender\mpcmdrun.exe';Protocol='TCP';LPort='*';RPort='443';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] OneSyncSvc (Sync Host)';Program='C:\Windows\System32\svchost.exe';Service='OneSyncSvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] osprivacy (Privacy settings sync/telemetry)';Program='C:\Windows\System32\svchost.exe';Service='osprivacy';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
@@ -76,6 +80,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] TimeBrokerSvc INBOUND (Manages background tasks for UWP apps)';Program='C:\Windows\System32\svchost.exe';Service='TimeBrokerSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] UdkSvcGroup (User Data Storage/cross device sync)';Program='C:\Windows\System32\svchost.exe';Service='UdkSvcGroup';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] WerSvc (Windows Error Reporting Service)';Program='C:\Windows\System32\svchost.exe';Service='WerSvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] wlidsvc (ping/Microsoft Account Sign-in Assistant)';Program='C:\Windows\System32\svchost.exe';Service='wlidsvc';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] Appinfo (Application Information service/elevation prompts/UAC/app launch control)';Program='C:\Windows\System32\svchost.exe';Service='Appinfo';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] appmodel (App Model service/manages modern/UWP app lifecycle and state)';Program='C:\Windows\System32\svchost.exe';Service='appmodel';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] BITS (Background Intelligent Transfer Service/Secure Boot CA/key update)';Program='C:\Windows\System32\svchost.exe';Service='BITS';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
@@ -104,6 +109,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF UPDATES DISABLED] W32Time (Time sync/critical for certificate validation/Secure Boot CA/key update)';Program='C:\Windows\System32\svchost.exe';Service='W32Time';Protocol='UDP';LPort='*';RPort='123';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] WaaSMedicAgent.exe (Windows Update Medic Service)';Program='C:\Windows\UUS\amd64\WaaSMedicAgent.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] Wcmsvc (NCSI HTTP Probe)';Program='C:\Windows\System32\svchost.exe';Service='Wcmsvc';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF UPDATES DISABLED] Web traffic HTTP OUTBOUND TCP (unencrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] WinHttpAutoProxySvc (WinHTTP Web Proxy Auto-Discovery service/detects proxy settings for apps)';Program='C:\Windows\System32\svchost.exe';Service='WinHttpAutoProxySvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] Winmgmt (Windows Management Instrumentation)';Program='C:\Windows\System32\svchost.exe';Service='Winmgmt';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] wlidsvc (Microsoft Account Sign-in Assistant)';Program='C:\Windows\System32\svchost.exe';Service='wlidsvc';Protocol='TCP';LPort='*';RPort='443';Action='Block';Profile='Any';Direction='Outbound'},
