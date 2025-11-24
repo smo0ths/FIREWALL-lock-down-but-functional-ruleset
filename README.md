@@ -10,11 +10,12 @@
 * ##### Rules: *check outbound/domain/private/public*
 * ##### Security: *check secure profile/not secure rules, delete unauthorized rules though (press - on all other authorized groups but WFC and temp rules)*
 #### Rules Panel: 
-* ##### block the rules you don't want
+* ##### open delete/block rules you don't want
 #
-* ##### Switch to secure rules if you dont want apps creating rules*
+* ##### Switch to secure rules if you dont want apps creating rules* (can break connections for that app)
 * ##### Remember to set ALLOW to the [BLOCK IF UPDATES DISABLED] and [BLOCK IF NOT USING] if needed
 * ##### right click block apps before opening them
+* ##### just allow or block when rules pop up (dont worry about addresses/ports/protocols/ect)
 #
 ## then copy/paste in PowerShell:
 #
