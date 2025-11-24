@@ -8,11 +8,11 @@
 * ##### Notifications: *check display, set close notification to 999, default advanced notifications settings is fine
 * ##### Options: *check shell/start*
 * ##### Rules: *check outbound/domain/private/public*
-* ##### Security: *check secure profile/not secure rules, delete unauthorized rules though (press - on all other authorized groups but WFC and temp rules*)
+* ##### Security: *check secure profile/not secure rules, delete unauthorized rules though (press - on all other authorized groups but WFC and temp rules)*
 #### Rules Panel: 
-* ##### delete rules you didn't make
+* ##### block the rules you don't want
 #
-* ##### Remember to set ALLOW to the [BLOCK IF UPDATES DISABLED] [BLOCK IF NOT USING] [BLOCK IF UPDATES/LOGIN DISABLED] if needed
+* ##### Remember to set ALLOW to the [BLOCK IF UPDATES DISABLED] and [BLOCK IF NOT USING] if needed
 #
 ## then copy/paste in PowerShell:
 #
