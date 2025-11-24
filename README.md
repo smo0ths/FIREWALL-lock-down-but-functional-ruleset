@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.1.3
+# LDFRS (PowerShell script) v0.1.4
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
@@ -8,7 +8,7 @@
 * ##### Notifications: *check display, set close notification to 999, default advanced notifications settings is fine
 * ##### Options: *check shell/start*
 * ##### Rules: *check outbound/domain/private/public*
-* ##### Security: *check secure profile/secure rules, delete unauthorized rules (press - on all other authorized groups but WFC and temp rules*)
+* ##### Security: *check secure profile/not secure rules, delete unauthorized rules though (press - on all other authorized groups but WFC and temp rules*)
 #### Rules Panel: 
 * ##### delete rules you didn't make
 #
