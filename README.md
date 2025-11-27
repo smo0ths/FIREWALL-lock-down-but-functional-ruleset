@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.1.9
+# LDFRS (PowerShell script) v0.2.0
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
@@ -36,7 +36,9 @@ $rules = @(
 @{Name='✔️ Allow iphlpsvc';Program='C:\Windows\System32\svchost.exe';Service='iphlpsvc';Protocol='TCP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow netprofm';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='TCP';LPort='*';RPort='80';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow Web traffic HTTPS OUTBOUND TCP (encrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Allow Web traffic QUIC OUTBOUND UDP (encrypted)';Program='Any';Protocol='UDP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow Web traffic QUIC HTTP3 OUTBOUND UDP (encrypted)';Program='Any';Protocol='UDP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Disable/Enable Loopback HTTPS Probe';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';LPort='*';RPort='443';RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
+@{Name='✔️ Disable/Enable Web traffic HTTP OUTBOUND TCP (unencrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] Appinfo';Program='C:\Windows\System32\svchost.exe';Service='Appinfo';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] appmodel';Program='C:\Windows\System32\svchost.exe';Service='appmodel';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] BITS';Program='C:\Windows\System32\svchost.exe';Service='BITS';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
@@ -64,12 +66,12 @@ $rules = @(
 @{Name='✖ [BLOCK IF UPDATES DISABLED] WaaSMedicAgent.exe';Program='C:\Windows\UUS\amd64\WaaSMedicAgent.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] WinHttpAutoProxySvc';Program='C:\Windows\System32\svchost.exe';Service='WinHttpAutoProxySvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] Winmgmt';Program='C:\Windows\System32\svchost.exe';Service='Winmgmt';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF UPDATES DISABLED] wlidsvc';Program='C:\Windows\System32\svchost.exe';Service='wlidsvc';Protocol='TCP';LPort='*';RPort='443';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF UPDATES DISABLED] wlidsvc';Program='C:\Windows\System32\svchost.exe';Service='wlidsvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] WpnService';Program='C:\Windows\System32\svchost.exe';Service='WpnService';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] wuauserv';Program='C:\Windows\System32\svchost.exe';Service='wuauserv';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] wfcUI.exe (allow for updates)';Program='C:\Program Files\Malwarebytes\Windows Firewall Control\wfcUI.exe';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] AppIdCertStoreCheck.exe';Program='C:\Windows\System32\AppIdCertStoreCheck.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] BDESVC';Program='C:\Windows\System32\svchost.exe';Service='BDESVC';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] camsvc';Program='C:\Windows\System32\svchost.exe';Service='camsvc';Protocol='Any';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] CompatTelRunner.exe';Program='C:\Windows\System32\CompatTelRunner.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] dasHost.exe';Program='C:\Windows\System32\dashost.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] DcomLaunch';Program='C:\Windows\System32\svchost.exe';Service='DcomLaunch';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
@@ -79,25 +81,23 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] EventLog RPC INBOUND';Program='C:\Windows\System32\svchost.exe';Service='EventLog';Protocol='TCP';LPort='135';Action='Block';Profile='Domain,Private';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] explorer.exe';Program='C:\Windows\explorer.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] IGMP INBOUND';Program='System';Protocol='2';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Inbound'},
-@{Name='✖ [BLOCK IF NOT USING] IGMP NT Kernel & System OUTBOUND';Program='System';Protocol='2';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] IGMP OUTBOUND';Program='System';Protocol='2';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] LanmanServer INBOUND';Program='C:\Windows\System32\svchost.exe';Service='LanmanServer';Protocol='TCP';LPort='139';RPort='*';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] LanmanServer INBOUND';Program='C:\Windows\System32\svchost.exe';Service='LanmanServer';Protocol='TCP';LPort='445';RPort='*';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] LanmanServer INBOUND';Program='C:\Windows\System32\svchost.exe';Service='LanmanServer';Protocol='UDP';LPort='137';RPort='*';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] LanmanServer INBOUND';Program='C:\Windows\System32\svchost.exe';Service='LanmanServer';Protocol='UDP';LPort='138';RPort='*';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] LanmanWorkstation';Program='C:\Windows\System32\svchost.exe';Service='LanmanWorkstation';Protocol='TCP';LPort='*';RPort=@('445','443');RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] Loopback HTTPS Probe';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';LPort='*';RPort='443';RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] lsass.exe';Program='C:\Windows\System32\lsass.exe';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] MpCmdRun.exe';Program='C:\Program Files (x86)\Windows Defender\MpCmdRun.exe';Protocol='TCP';LPort='*';RPort='443';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] MpCmdRun.exe';Program='C:\Program Files\Windows Defender\MpCmdRun.exe';Protocol='TCP';LPort='*';RPort='443';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] OneSyncSvc';Program='C:\Windows\System32\svchost.exe';Service='OneSyncSvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] osprivacy';Program='C:\Windows\System32\svchost.exe';Service='osprivacy';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] osprivacy';Program='C:\Windows\System32\svchost.exe';Service='osprivacy';Protocol='Any';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Remote L2TP UDP INBOUND';Program='System';Protocol='UDP';LPort='1701';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] Remote L2TP UDP OUTBOUND';Program='System';Protocol='UDP';RPort='1701';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Remote PPTP TCP INBOUND';Program='System';Protocol='TCP';LPort='1723';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] Remote PPTP TCP OUTBOUND';Program='System';Protocol='TCP';RPort='1723';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] Remote protocol 47 GRE OUTBOUND';Program='System';Protocol='47';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Remote protocol 47 GRE INBOUND';Program='System';Protocol='47';Action='Block';Profile='Any';Direction='Inbound'},
+@{Name='✖ [BLOCK IF NOT USING] Remote protocol 47 GRE OUTBOUND';Program='System';Protocol='47';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Remote RDP TCP INBOUND';Program='C:\Windows\System32\svchost.exe';Service='TermService';Protocol='TCP';LPort='3389';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] Remote RDP TCP OUTBOUND';Program='C:\Windows\System32\svchost.exe';Service='TermService';Protocol='TCP';RPort='3389';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] Remote RDP UDP INBOUND';Program='C:\Windows\System32\svchost.exe';Service='TermService';Protocol='UDP';LPort='3389';Action='Block';Profile='Any';Direction='Inbound'},
@@ -111,7 +111,8 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] spoolsv.exe';Program='C:\Windows\System32\spoolsv.exe';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] TimeBrokerSvc INBOUND';Program='C:\Windows\System32\svchost.exe';Service='TimeBrokerSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] UdkSvcGroup';Program='C:\Windows\System32\svchost.exe';Service='UdkSvcGroup';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] WerSvc';Program='C:\Windows\System32\svchost.exe';Service='WerSvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'}
+@{Name='✖ [BLOCK IF NOT USING] WerSvc';Program='C:\Windows\System32\svchost.exe';Service='WerSvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] wfcUI.exe (allow for updates)';Program='C:\Program Files\Malwarebytes\Windows Firewall Control\wfcUI.exe';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'}
 )
 $log="$([Environment]::GetFolderPath('Desktop'))\FirewallRules.log"
 foreach($r in $rules){
