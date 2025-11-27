@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.2.0
+# LDFRS (PowerShell script) v0.2.1
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
@@ -37,8 +37,8 @@ $rules = @(
 @{Name='✔️ Allow netprofm';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='TCP';LPort='*';RPort='80';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow Web traffic HTTPS OUTBOUND TCP (encrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow Web traffic QUIC HTTP3 OUTBOUND UDP (encrypted)';Program='Any';Protocol='UDP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Disable/Enable Loopback HTTPS Probe';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';LPort='*';RPort='443';RAddr='127.0.0.1';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
-@{Name='✔️ Disable/Enable Web traffic HTTP OUTBOUND TCP (unencrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
+@{Name='✔️ Disable/Enable/Allow/Block Loopback HTTPS Probe';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';LPort='*';RPort='443';RAddr='127.0.0.1';Action='Allow';Profile='Any';Direction='Outbound';Enabled='True'},
+@{Name='✔️ Disable/Enable/Allow/Block Web traffic HTTP OUTBOUND TCP (unencrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='80';Action='Allow';Profile='Any';Direction='Outbound';Enabled='True'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] Appinfo';Program='C:\Windows\System32\svchost.exe';Service='Appinfo';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] appmodel';Program='C:\Windows\System32\svchost.exe';Service='appmodel';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] BITS';Program='C:\Windows\System32\svchost.exe';Service='BITS';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
@@ -62,7 +62,6 @@ $rules = @(
 @{Name='✖ [BLOCK IF UPDATES DISABLED] UserProfileService';Program='C:\Windows\System32\svchost.exe';Service='UserProfileService';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] UsoSvc';Program='C:\Windows\System32\svchost.exe';Service='UsoSvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] VaultSvc';Program='C:\Windows\System32\svchost.exe';Service='VaultSvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF UPDATES DISABLED] W32Time';Program='C:\Windows\System32\svchost.exe';Service='W32Time';Protocol='UDP';LPort='*';RPort='123';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] WaaSMedicAgent.exe';Program='C:\Windows\UUS\amd64\WaaSMedicAgent.exe';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] WinHttpAutoProxySvc';Program='C:\Windows\System32\svchost.exe';Service='WinHttpAutoProxySvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] Winmgmt';Program='C:\Windows\System32\svchost.exe';Service='Winmgmt';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
@@ -111,6 +110,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] spoolsv.exe';Program='C:\Windows\System32\spoolsv.exe';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] TimeBrokerSvc INBOUND';Program='C:\Windows\System32\svchost.exe';Service='TimeBrokerSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] UdkSvcGroup';Program='C:\Windows\System32\svchost.exe';Service='UdkSvcGroup';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] W32Time';Program='C:\Windows\System32\svchost.exe';Service='W32Time';Protocol='UDP';LPort='*';RPort='123';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] WerSvc';Program='C:\Windows\System32\svchost.exe';Service='WerSvc';Protocol='TCP';LPort='*';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] wfcUI.exe (allow for updates)';Program='C:\Program Files\Malwarebytes\Windows Firewall Control\wfcUI.exe';Protocol='TCP';LPort='*';RPort='*';Action='Block';Profile='Any';Direction='Outbound'}
 )
