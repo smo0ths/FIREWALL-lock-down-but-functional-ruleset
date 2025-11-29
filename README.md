@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.2.3
+# LDFRS (PowerShell script) v0.2.4
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
@@ -8,21 +8,18 @@
 * ##### Notifications: *check display, set close notification to 999, default advanced notifications settings is fine
 * ##### Options: *check shell/start*
 * ##### Rules: *check outbound/domain/private/public*
-* ##### Security: *check secure profile/not secure rules, delete unauthorized rules though (press - on all other authorized groups but WFC and temp rules)*
-#### Rules Panel: 
-* ##### open *delete/block rules you don't want*
+* ##### Security: *check secure profile/secure rules(w/ disabled unauthorized rules) and delete unauthorized groups though (press - on all other authorized groups keep WFC and temp rules)*
 #
-* ##### Switch to secure rules if you dont want apps creating rules
-* ##### when secure rules/disabled unauthorized rules is checked, change disabled group name to Windows Firewall Control and enable if you want to keep rule
-* ##### Remember to set ALLOW to the [BLOCK IF UPDATES DISABLED] and [BLOCK IF NOT USING] if needed
-* ##### right click block apps before opening them
-* ##### just allow or block when rules pop up (dont worry about addresses/ports/protocols/ect)
+* ##### Rules Panel: *open delete/block rules you don't want*
+* ##### *change disabled rules group name Windows Firewall Control and enable if you want to keep rule*
+* ##### *set ALLOW to the [BLOCK IF UPDATES DISABLED] and [BLOCK IF NOT USING] if needed*
+* ##### *Enable-Block Web traffic HTTP OUTBOUND TCP (unencrypted) if you want to block all HTTP traffic*
+* ##### *right click block apps before opening them*
 #
-## then copy/paste in PowerShell:
+## copy/paste in PowerShell:
 #
 ```python
-# lock‑down but functional ruleset LDFRS (PowerShell script)
-$patterns='*✔️*','*✖*'; 
+$patterns='*✔️*','*✖*';
 Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? Group -eq 'Windows Firewall Control' | Remove-NetFirewallRule
 $rules = @(
 @{Name='✔️ Allow CryptSvc (Certificate validation/Signature checks)';Program='C:\Windows\System32\svchost.exe';Service='CryptSvc';Protocol='TCP';LPort='*';RPort=@(80,443);Action='Allow';Profile='Any';Direction='Outbound'},
@@ -39,7 +36,7 @@ $rules = @(
 @{Name='✔️ Allow netprofm';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='TCP';LPort='*';RPort='80';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow Web traffic HTTPS OUTBOUND TCP (encrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow Web traffic QUIC HTTP3 OUTBOUND UDP (encrypted)';Program='Any';Protocol='UDP';LPort='*';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Block Web traffic HTTP OUTBOUND TCP (unencrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Disable/Enable Block Web traffic HTTP OUTBOUND TCP (unencrypted)';Program='Any';Protocol='TCP';LPort='*';RPort='80';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] Appinfo';Program='C:\Windows\System32\svchost.exe';Service='Appinfo';Protocol='TCP';LPort='*';RPort=@(80,443);Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] appmodel';Program='C:\Windows\System32\svchost.exe';Service='appmodel';Protocol='TCP';LPort='*';RPort=@(80,443);Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] BITS';Program='C:\Windows\System32\svchost.exe';Service='BITS';Protocol='TCP';LPort='*';RPort=@(80,443);Action='Block';Profile='Any';Direction='Outbound'},
@@ -144,18 +141,35 @@ $targets = Get-ChildItem $base -Directory -Filter "nv_dispi.inf_amd64_*" -EA 0 |
   ForEach-Object {
     @(
       Join-Path $_.FullName "Display.NvContainer\NVDisplay.Container.exe"
+    )
+  } | Where-Object {Test-Path $_}
+foreach($exe in $targets){
+  try{
+    $rule = New-NetFirewallRule -DisplayName "✖ [BLOCK IF NOT USING] $([IO.Path]::GetFileName($exe))" `
+      -Direction Outbound -Action Block -Program $exe `
+      -Protocol TCP -LocalPort Any -RemotePort Any -Profile Any -Enabled True `
+      -Group "Windows Firewall Control"
+    "SUCCESS: $exe" >> $log
+  }catch{
+    "FAILED: $exe $($_.Exception.Message)" >> $log
+  }
+}
+$base = "C:\Windows\System32\DriverStore\FileRepository"
+$targets = Get-ChildItem $base -Directory -Filter "nv_dispi.inf_amd64_*" -EA 0 |
+  ForEach-Object {
+    @(
       Join-Path $_.FullName "nvngx_update.exe"
     )
   } | Where-Object {Test-Path $_}
 foreach($exe in $targets){
   try{
-    New-NetFirewallRule -DisplayName "✖ [BLOCK IF NOT USING] $([IO.Path]::GetFileName($exe))" `
+    $rule = New-NetFirewallRule -DisplayName "✖ [BLOCK IF NOT USING] $([IO.Path]::GetFileName($exe))" `
       -Direction Outbound -Action Block -Program $exe `
       -Protocol TCP -LocalPort Any -RemotePort Any -Profile Any -Enabled True `
       -Group "Windows Firewall Control"
-    "SUCCESS: Block rule for $exe"
+    "SUCCESS: $exe" >> $log
   }catch{
-    "FAILED: $exe $($_.Exception.Message)"
+    "FAILED: $exe $($_.Exception.Message)" >> $log
   }
 }
 ```
