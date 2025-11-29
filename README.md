@@ -8,7 +8,7 @@
 * ##### Notifications: *check display, set close notification to 999, default advanced notifications settings is fine
 * ##### Options: *check shell/start*
 * ##### Rules: *check outbound/domain/private/public*
-* ##### Security: *check secure profile/secure rules(w/ disabled unauthorized rules) and delete unauthorized groups though (press - on all other authorized groups keep WFC and temp rules)*
+* ##### Security: *check secure profile/secure rules(w/ disable unauthorized rules) and delete unauthorized groups though (press - on all other authorized groups keep WFC and temp rules)*
 #
 * ##### Rules Panel: *open delete/block rules you don't want*
 * ##### *change disabled rules group name Windows Firewall Control and enable if you want to keep rule*
