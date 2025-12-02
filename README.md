@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.2.9
+# LDFRS (PowerShell script) v0.3.0
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
@@ -15,7 +15,8 @@
 * ##### *set ALLOW to the [BLOCK IF UPDATES DISABLED] and [BLOCK IF NOT USING] if needed*
 * ##### *Enable-Block Web traffic HTTP OUTBOUND TCP (unencrypted) if you want to block all HTTP traffic*
 * ##### *right click block apps before opening them*
-* ##### *when pop-up click customize this rule before creating it > uncheck local ports/remote IP > and then allow/block
+* ##### *when pop-up click customize this rule before creating it > uncheck local ports/remote IP > and then allow/block*
+* ##### *uncheck secure rules if you just want the app to create its own rules you'll edit later*
 #
 ## copy/paste in PowerShell:
 #
@@ -64,7 +65,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] EventLog RPC INBOUND';Program='C:\Windows\System32\svchost.exe';Service='EventLog';Protocol='TCP';LPort='135';Action='Block';Profile='Domain,Private';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] explorer.exe';Program='C:\Windows\explorer.exe';Protocol='TCP';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] IGMP INBOUND LocalSubnet (multicast stuff)';Program='System';Protocol='2';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Inbound'},
-@{Name='✖ [BLOCK IF NOT USING] IGMP OUTBOUND (multicast stuff)';Protocol='2';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] IGMP OUTBOUND (multicast stuff)';Program='System';Protocol='2';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] IGMP OUTBOUND LocalSubnet (multicast stuff)';Program='System';Protocol='2';RAddr='LocalSubnet';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] IKEEXT';Program='C:\Windows\System32\svchost.exe';Service='IKEEXT';Protocol='UDP';LPort='500';RPort='500';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] InstallService';Program='C:\Windows\System32\svchost.exe';Service='InstallService';Protocol='TCP';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
