@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.3.0
+# LDFRS (PowerShell script) v0.3.1
 ##### this is for Malwarebytes Windows Firewall Control
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
@@ -53,6 +53,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] AppXSvc (WSAPPX)';Program='C:\Windows\System32\svchost.exe';Service='AppXSvc';Protocol='TCP';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] backgroundTaskHost.exe';Program='C:\Windows\System32\backgroundTaskHost.exe';Protocol='TCP';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] BDESVC';Program='C:\Windows\System32\svchost.exe';Service='BDESVC';Protocol='TCP';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] camsvc';Program='C:\Windows\System32\svchost.exe';Service='camsvc';Protocol='TCP';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] ClipSVC (WSAPPX)';Program='C:\Windows\System32\svchost.exe';Service='ClipSVC';Protocol='TCP';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] CompatTelRunner.exe';Program='C:\Windows\System32\CompatTelRunner.exe';Protocol='TCP';RPort=@('80','443');Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] CompPkgSrv.exe';Program='C:\Windows\System32\CompPkgSrv.exe';Protocol='TCP';RPort='443';Action='Block';Profile='Any';Direction='Outbound'},
