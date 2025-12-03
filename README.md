@@ -1,5 +1,7 @@
-# LDFRS (PowerShell script) v0.3.4
+# LDFRS (PowerShell script) v0.3.5
 ##### this is for Malwarebytes Windows Firewall Control
+##### you can make this for any firewall though
+##### how does the internet even work 🤫
 ## what to do:
 ##### use [Registry-Tweaks-Refresh](https://github.com/smo0ths/Registry-Tweaks-Refresh.bat) and [My-Network-Adaptor-Settings](https://github.com/smo0ths/My-Network-Adaptor-Settings) with this
 #
@@ -16,7 +18,7 @@
 * ##### *Enable-Block Web traffic HTTP OUTBOUND TCP (unencrypted) if you want to block all HTTP traffic*
 * ##### *right click block apps before opening them*
 * ##### *when pop-up click customize this rule before creating it > uncheck local ports/remote IP > and then allow/block*
-* ##### *uncheck secure rules if you just want the app to create its own rules you'll edit later*
+* ##### *uncheck secure rules if you just want the app to create its own rules enabled you can edit later (not secure)*
 #
 ## copy/paste in PowerShell:
 #
@@ -28,6 +30,7 @@ $rules = @(
 @{Name='✔️ Allow CryptSvc (Certificate validation/Signature checks)';Program='C:\Windows\System32\svchost.exe';Service='CryptSvc';Protocol='TCP';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow CryptSvc (Certificate validation/Signature checks)';Program='C:\Windows\System32\svchost.exe';Service='CryptSvc';Protocol='TCP';RPort='80';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow DHCPv4 INBOUND (Server Response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Any';Direction='Inbound'},
+@{Name='✔️ Allow DHCPv4 INBOUND (tag me)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='67';RPort='68';LAddr='255.255.255.255';RAddr='0.0.0.0';Action='Allow';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow DHCPv4 OUTBOUND (Client Request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow DHCPv6 INBOUND (Server Response)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';Action='Allow';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow DHCPv6 OUTBOUND (Client Request)';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';RAddr='ff02::1:2';Action='Allow';Profile='Any';Direction='Outbound'},
