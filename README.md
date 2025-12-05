@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.3.9
+# LDFRS (PowerShell script) v0.4.0
 ##### this is for Malwarebytes Windows Firewall Control
 ##### you can make this for any firewall though
 ## what to do:
@@ -142,7 +142,7 @@ foreach($r in $rules){
     }
 }
 $base = "C:\Windows\System32\DriverStore\FileRepository"
-$targets = Get-ChildItem $base -Directory -Filter "nv_dispi.inf_amd64_*" -EA 0 |
+$targets = Get-ChildItem $base -Directory -Filter "nv_disp*" -EA 0 |
   ForEach-Object {
     @(
       Join-Path $_.FullName "Display.NvContainer\NVDisplay.Container.exe"
@@ -160,7 +160,7 @@ foreach($exe in $targets){
   }
 }
 $base = "C:\Windows\System32\DriverStore\FileRepository"
-$targets = Get-ChildItem $base -Directory -Filter "nv_dispi.inf_amd64_*" -EA 0 |
+$targets = Get-ChildItem $base -Directory -Filter "nv_disp*" -EA 0 |
   ForEach-Object {
     @(
       Join-Path $_.FullName "nvngx_update.exe"
