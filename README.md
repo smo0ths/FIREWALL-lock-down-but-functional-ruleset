@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.4.1
+# LDFRS (PowerShell script) v0.4.2
 ##### this is for Malwarebytes Windows Firewall Control
 ##### you can make this for any firewall though
 ## what to do:
@@ -66,6 +66,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] LanmanWorkstation';Program='C:\Windows\System32\svchost.exe';Service='LanmanWorkstation';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] LicenseManager';Program='C:\Windows\System32\svchost.exe';Service='LicenseManager';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] lsass.exe';Program='C:\Windows\System32\lsass.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] LxpSvc';Program='C:\Windows\System32\svchost.exe';Service='LxpSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] MapsBroker';Program='C:\Windows\System32\svchost.exe';Service='MapsBroker';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] MpCmdRun.exe';Program='C:\Program Files (x86)\Windows Defender\MpCmdRun.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] MpCmdRun.exe';Program='C:\Program Files\Windows Defender\MpCmdRun.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -91,6 +92,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] W32Time';Program='C:\Windows\System32\svchost.exe';Service='W32Time';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] WerSvc';Program='C:\Windows\System32\svchost.exe';Service='WerSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] wfcUI.exe';Program='C:\Program Files\Malwarebytes\Windows Firewall Control\wfcUI.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] WFDSConMgrSvc';Program='C:\Windows\System32\svchost.exe';Service='WFDSConMgrSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] wlidsvc';Program='C:\Windows\System32\svchost.exe';Service='wlidsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] WpnService';Program='C:\Windows\System32\svchost.exe';Service='WpnService';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'}
 )
