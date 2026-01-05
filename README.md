@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.4.2
+# LDFRS (PowerShell script) v0.4.3
 ##### this is for Malwarebytes Windows Firewall Control
 ##### you can make this for any firewall though
 ## what to do:
@@ -26,7 +26,9 @@ Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? Group -eq 'Windows Firewall
 $rules = @(
 @{Name='✔️ Allow DHCPv4/v6 INBOUND';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='Any';Action='Allow';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow DHCPv4/v6 OUTBOUND';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='Any';Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Allow DNS OUTBOUND';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='Any';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow DNS OUTBOUND TCP (DoH)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow DNS OUTBOUND TCP (plaintext)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='53';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow DNS OUTBOUND UDP (plaintext)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='53';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow ICMPv4 INBOUND';Program='System';Protocol='1';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='0'},
 @{Name='✔️ Allow ICMPv4 OUTBOUND';Program='System';Protocol='1';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='8'},
 @{Name='✔️ Allow ICMPv6 INBOUND';Program='System';Protocol='58';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='129'},
@@ -34,7 +36,6 @@ $rules = @(
 @{Name='✔️ Allow netprofm';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='Any';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] BITS';Program='C:\Windows\System32\svchost.exe';Service='BITS';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] DoSvc';Program='C:\Windows\System32\svchost.exe';Service='DoSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF UPDATES DISABLED] DsmSvc';Program='C:\Windows\System32\svchost.exe';Service='DsmSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] InstallService';Program='C:\Windows\System32\svchost.exe';Service='InstallService';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] MoUsoCoreWorker.exe';Program='C:\Windows\UUS\amd64\MoUsoCoreWorker.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF UPDATES DISABLED] SIHClient.exe';Program='C:\Windows\System32\SIHClient.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -56,6 +57,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] dcsvc';Program='C:\Windows\System32\svchost.exe';Service='dcsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] DevicesFlow';Program='C:\Windows\System32\svchost.exe';Service='DevicesFlow';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] DiagTrack';Program='C:\Windows\System32\svchost.exe';Service='DiagTrack';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] DsmSvc';Program='C:\Windows\System32\svchost.exe';Service='DsmSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] EventLog RPC INBOUND';Program='C:\Windows\System32\svchost.exe';Service='EventLog';Protocol='Any';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] explorer.exe';Program='C:\Windows\explorer.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] gpsvc';Program='C:\Windows\System32\svchost.exe';Service='gpsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -86,6 +88,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] spoolsv.exe';Program='C:\Windows\System32\spoolsv.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] SystemSettings.exe';Program='C:\Windows\ImmersiveControlPanel\SystemSettings.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] taskhostw.exe';Program='C:\Windows\System32\taskhostw.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] TimeBrokerSvc';Program='C:\Windows\System32\svchost.exe';Service='TimeBrokerSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] TokenBroker';Program='C:\Windows\System32\svchost.exe';Service='TokenBroker';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] UdkSvcGroup';Program='C:\Windows\System32\svchost.exe';Service='UdkSvcGroup';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] UnistackSvcGroup';Program='C:\Windows\System32\svchost.exe';Service='UnistackSvcGroup';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
