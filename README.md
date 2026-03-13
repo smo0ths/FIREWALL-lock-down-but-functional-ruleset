@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.4.5
+# LDFRS (PowerShell script) v0.4.6
 ##### this is for Malwarebytes Windows Firewall Control
 ##### you can make this for any firewall though
 ## what to do:
@@ -36,14 +36,19 @@ $rules = @(
 @{Name='✔️ [BLOCK IF UPDATES DISABLED] wuauserv';Program='C:\Windows\System32\svchost.exe';Service='wuauserv';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow DHCPv4/v6 INBOUND UDP';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';Action='Allow';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow DHCPv4/v6 OUTBOUND UDP';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Allow Dnscache OUTBOUND TCP (HTTPS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow ICMPv4 INBOUND';Program='System';Protocol='1';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='0'},
 @{Name='✔️ Allow ICMPv4 OUTBOUND';Program='System';Protocol='1';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='8'},
 @{Name='✔️ Allow ICMPv6 INBOUND';Program='System';Protocol='58';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='129'},
 @{Name='✔️ Allow ICMPv6 OUTBOUND';Program='System';Protocol='58';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='128'},
 @{Name='✔️ Allow netprofm';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='Any';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow/Block Dnscache OUTBOUND TCP/443 (HTTPS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow/Block Dnscache OUTBOUND TCP/53 (HTTP)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='53';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow/Block Dnscache OUTBOUND TCP/80 (HTTP)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='80';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow/Block Dnscache OUTBOUND UDP/53 (HTTP)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='53';Action='Allow';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow/Block Dnscache OUTBOUND UDP/5353 (mDNS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='5353';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] AppIdCertStoreCheck.exe';Program='C:\Windows\System32\AppIdCertStoreCheck.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] appmodel';Program='C:\Windows\System32\svchost.exe';Service='appmodel';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] AppReadiness';Program='C:\Windows\System32\svchost.exe';Service='AppReadiness';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] AppXSvc';Program='C:\Windows\System32\svchost.exe';Service='AppXSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] backgroundTaskHost.exe';Program='C:\Windows\System32\backgroundTaskHost.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] BDESVC';Program='C:\Windows\System32\svchost.exe';Service='BDESVC';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -55,9 +60,6 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] dcsvc';Program='C:\Windows\System32\svchost.exe';Service='dcsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] DevicesFlow';Program='C:\Windows\System32\svchost.exe';Service='DevicesFlow';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] DiagTrack';Program='C:\Windows\System32\svchost.exe';Service='DiagTrack';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] Dnscache OUTBOUND TCP (HTTP)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='53';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] Dnscache OUTBOUND UDP (HTTP)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='53';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING] Dnscache OUTBOUND UDP (mDNS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='5353';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] DsmSvc';Program='C:\Windows\System32\svchost.exe';Service='DsmSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] EventLog RPC INBOUND';Program='C:\Windows\System32\svchost.exe';Service='EventLog';Protocol='Any';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] explorer.exe';Program='C:\Windows\explorer.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -87,6 +89,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING] ShellHWDetection';Program='C:\Windows\System32\svchost.exe';Service='ShellHWDetection';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] SMB INBOUND';Program='C:\Windows\System32\svchost.exe';Service='LanmanServer';Protocol='Any';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING] spoolsv.exe';Program='C:\Windows\System32\spoolsv.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING] swprv';Program='C:\Windows\System32\svchost.exe';Service='swprv';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] SystemSettings.exe';Program='C:\Windows\ImmersiveControlPanel\SystemSettings.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] taskhostw.exe';Program='C:\Windows\System32\taskhostw.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING] TimeBrokerSvc';Program='C:\Windows\System32\svchost.exe';Service='TimeBrokerSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
