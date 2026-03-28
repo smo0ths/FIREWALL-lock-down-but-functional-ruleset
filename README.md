@@ -13,8 +13,8 @@
 * ##### Rules Panel: *open delete/block rules you don't want*
 #
 * ##### *if check secure rules(w/ disable unauthorized rules) change disabled rules group name Windows Firewall Control and enable if you want to keep rule*
-* ##### *set ALLOW to the [BLOCK IF UPDATES DISABLED] and [BLOCK IF NOT USING] if needed*
-* ##### *right click block apps before opening them*
+* ##### *set ALLOW to the [UPDATES/CERTS/IDENTITY/LICENSING] and/or [BLOCK IF NOT USING] if needed*
+* ##### *right click block .exe's before opening them*
 * ##### *just click allow/block button unless blocking single port (click customize this rule before creating it > uncheck local ports/remote IP)
 #
 ## copy/paste in PowerShell:
