@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.4.9
+# LDFRS (PowerShell script) v0.5.0
 ##### this is for Malwarebytes Windows Firewall Control
 ##### you can make this for any firewall though
 ## what to do:
@@ -6,23 +6,23 @@
 #
 #### Malwarebytes Windows Firewall Control settings (from main panel):
 * ##### Profiles: *medium*
-* ##### Notifications: *check display, set close notification to 999, default advanced notifications settings is fine
+* ##### Notifications: *check display, set close notification to 999, default advanced notifications settings is fine*
 * ##### Options: *check shell/start*
 * ##### Rules: *check outbound/domain/private/public*
-* ##### Security: *check secure profile and delete unauthorized groups though (press - on all other authorized groups keep WFC and temp rules)*
+* ##### Security: *uncheck secure profile and delete unauthorized groups (press - on them)*
 * ##### Rules Panel: *open delete/block rules you don't want*
 #
-* ##### *if check secure rules(w/ disable unauthorized rules) change disabled rules group name Windows Firewall Control and enable if you want to keep rule*
 * ##### *set ALLOW to the [UPDATES/CERTS/IDENTITY/LICENSING] and/or [BLOCK IF NOT USING] if needed*
 * ##### *right click block .exe's before opening them*
-* ##### *just click allow/block button unless blocking single port (click customize this rule before creating it > uncheck local ports/remote IP)
+* ##### *just click allow/block button unless blocking single port (click customize this rule before creating it > uncheck local ports/remote IP)*
+* ##### *delete duplictaes/invalid rules from rules panel*
 #
 ## copy/paste in PowerShell:
 #
 ```python
 # lock‑down but functional ruleset LDFRS (PowerShell script)
 $patterns='*✔️*','*✖*';
-Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? Group -eq 'Windows Firewall Control' | Remove-NetFirewallRule
+Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? { $_.Group -eq 'Windows Firewall Control' -or [string]::IsNullOrWhiteSpace($_.Group) } | Remove-NetFirewallRule
 $rules = @(
 @{Name='✔️ [UPDATES] DoSvc';Program='C:\Windows\System32\svchost.exe';Service='DoSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✔️ [UPDATES] InstallService';Program='C:\Windows\System32\svchost.exe';Service='InstallService';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -45,16 +45,17 @@ $rules = @(
 @{Name='✔️ Allow ICMPv4 OUTBOUND';Program='System';Protocol='1';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='8'},
 @{Name='✔️ Allow ICMPv6 INBOUND';Program='System';Protocol='58';Action='Allow';Profile='Any';Direction='Inbound';IcmpType='129'},
 @{Name='✔️ Allow ICMPv6 OUTBOUND';Program='System';Protocol='58';Action='Allow';Profile='Any';Direction='Outbound';IcmpType='128'},
-@{Name='✔️ Allow Dnscache OUTBOUND TCP/53 (HTTP)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='53';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow Dnscache OUTBOUND UDP/53 (HTTP)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='53';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow Dnscache OUTBOUND TCP/443 (HTTPS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='443';Action='Allow';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Allow Dnscache OUTBOUND UDP/443 (HTTPS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='443';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow/Block Dnscache OUTBOUND TCP/53 (HTTP)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='TCP';RPort='53';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ Allow/Block Dnscache OUTBOUND UDP/443 (HTTPS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='443';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow/Block Dnscache INBOUND UDP/5353 (mDNS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='5353';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow/Block Dnscache OUTBOUND UDP/5353 (mDNS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='5353';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow/Block Everything OUTBOUND TCP/443 (HTTPS)';Program='Any';Service='Any';Protocol='TCP';RPort='443';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
-@{Name='✔️ Allow/Block Everything OUTBOUND TCP/80 (HTTP)';Program='Any';Service='Any';Protocol='TCP';RPort='80';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
 @{Name='✔️ Allow/Block Everything OUTBOUND UDP/443 (HTTPS)';Program='Any';Service='Any';Protocol='UDP';RPort='443';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
+@{Name='✔️ Allow/Block Everything OUTBOUND TCP/80 (HTTP)';Program='Any';Service='Any';Protocol='TCP';RPort='80';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
 @{Name='✔️ Allow/Block netprofm';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='Any';Action='Allow';Profile='Any';Direction='Outbound';Enabled='True'},
+@{Name='✖ [BLOCK IF NOT USING EXE] CompatTelRunner.exe';Program='C:\Windows\System32\CompatTelRunner.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING EXE] explorer.exe';Program='C:\Windows\explorer.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING EXE] lsass.exe';Program='C:\Windows\System32\lsass.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING EXE] rundll32.exe';Program='C:\Windows\System32\rundll32.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -64,6 +65,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING SERVICE] appmodel';Program='C:\Windows\System32\svchost.exe';Service='appmodel';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] AppReadiness';Program='C:\Windows\System32\svchost.exe';Service='AppReadiness';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] AppXSvc';Program='C:\Windows\System32\svchost.exe';Service='AppXSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING SERVICE] AudioEndpointBuilder';Program='C:\Windows\System32\svchost.exe';Service='AudioEndpointBuilder';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] BDESVC';Program='C:\Windows\System32\svchost.exe';Service='BDESVC';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] camsvc';Program='C:\Windows\System32\svchost.exe';Service='camsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] dcsvc';Program='C:\Windows\System32\svchost.exe';Service='dcsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -113,7 +115,7 @@ foreach($r in $rules){
         Protocol    = $r.Protocol
         Profile     = $r.Profile
         Enabled     = 'True'
-        Group       = 'Windows Firewall Control'
+        Group       = ''
     }
     if($r.Program){ $p.Program = $r.Program }
     if($r.Service){ $p.Service = $r.Service }
@@ -164,7 +166,7 @@ foreach($exe in $targets){
     $rule = New-NetFirewallRule -DisplayName "✖ [BLOCK IF NOT USING NVIDIA] $([IO.Path]::GetFileName($exe))" `
       -Direction Outbound -Action Block -Program $exe `
       -Protocol Any -LocalPort Any -RemotePort Any -Profile Any -Enabled True `
-      -Group "Windows Firewall Control"
+      -Group ""
     "SUCCESS: $exe" >> $log
   }catch{
     "FAILED: $exe $($_.Exception.Message)" >> $log
@@ -182,7 +184,7 @@ foreach($exe in $targets){
     $rule = New-NetFirewallRule -DisplayName "✖ [BLOCK IF NOT USING NVIDIA] $([IO.Path]::GetFileName($exe))" `
       -Direction Outbound -Action Block -Program $exe `
       -Protocol Any -LocalPort Any -RemotePort Any -Profile Any -Enabled True `
-      -Group "Windows Firewall Control"
+      -Group ""
     "SUCCESS: $exe" >> $log
   }catch{
     "FAILED: $exe $($_.Exception.Message)" >> $log
