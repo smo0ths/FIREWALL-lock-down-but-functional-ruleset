@@ -1,4 +1,4 @@
-# LDFRS (PowerShell script) v0.5.0
+# LDFRS (PowerShell script) v0.5.1
 ##### this is for Malwarebytes Windows Firewall Control
 ##### you can make this for any firewall though
 ## what to do:
@@ -10,12 +10,7 @@
 * ##### Options: *check shell/start*
 * ##### Rules: *check outbound/domain/private/public*
 * ##### Security: *uncheck secure profile and delete unauthorized groups (press - on them)*
-* ##### Rules Panel: *open delete/block rules you don't want*
-#
-* ##### *set ALLOW to the [UPDATES/CERTS/IDENTITY/LICENSING] and/or [BLOCK IF NOT USING] if needed*
-* ##### *right click block .exe's before opening them*
-* ##### *just click allow/block button unless blocking single port (click customize this rule before creating it > uncheck local ports/remote IP)*
-* ##### *delete duplictaes/invalid rules from rules panel*
+* ##### Rules Panel: *open and block/enable auto added rules from windows or programs*
 #
 ## copy/paste in PowerShell:
 #
@@ -24,19 +19,8 @@
 $patterns='*✔️*','*✖*';
 Get-NetFirewallRule -DisplayName $patterns -EA 0 | ? { $_.Group -eq 'Windows Firewall Control' -or [string]::IsNullOrWhiteSpace($_.Group) } | Remove-NetFirewallRule
 $rules = @(
-@{Name='✔️ [UPDATES] DoSvc';Program='C:\Windows\System32\svchost.exe';Service='DoSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [UPDATES] InstallService';Program='C:\Windows\System32\svchost.exe';Service='InstallService';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [UPDATES] UsoSvc';Program='C:\Windows\System32\svchost.exe';Service='UsoSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [UPDATES/CERTS] BITS';Program='C:\Windows\System32\svchost.exe';Service='BITS';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [UPDATES/CERTS] CryptSvc';Program='C:\Windows\System32\svchost.exe';Service='CryptSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [UPDATES/CERTS] sppsvc';Program='C:\Windows\System32\svchost.exe';Service='sppsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [UPDATES/CERTS] wuauserv';Program='C:\Windows\System32\svchost.exe';Service='wuauserv';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [IDENTITY/LICENSING] ClipSVC';Program='C:\Windows\System32\svchost.exe';Service='ClipSVC';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [IDENTITY/LICENSING] LicenseManager';Program='C:\Windows\System32\svchost.exe';Service='LicenseManager';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [IDENTITY/LICENSING] OneSyncSvc';Program='C:\Windows\System32\svchost.exe';Service='OneSyncSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [IDENTITY/LICENSING] TokenBroker';Program='C:\Windows\System32\svchost.exe';Service='TokenBroker';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ [IDENTITY/LICENSING] wlidsvc';Program='C:\Windows\System32\svchost.exe';Service='wlidsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Allow DHCP Client';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='67';RPort='68';Action='Allow';Profile='Any';Direction='Inbound'},
+@{Name='✔️ [ALLOW TO UPDATE WINDOWS] Allow/Block Everything OUTBOUND TCP/443 (HTTPS)';Program='Any';Service='Any';Protocol='TCP';RPort='443';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
+@{Name='✔️ [ALLOW TO UPDATE WINDOWS] Allow/Block Everything OUTBOUND TCP/80 (HTTP)';Program='Any';Service='Any';Protocol='TCP';RPort='80';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
 @{Name='✔️ Allow DHCPv4 INBOUND';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow DHCPv4 OUTBOUND';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='68';RPort='67';Action='Allow';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow DHCPv6 INBOUND';Program='C:\Windows\System32\svchost.exe';Service='Dhcp';Protocol='UDP';LPort='546';RPort='547';Action='Allow';Profile='Any';Direction='Inbound'},
@@ -51,13 +35,12 @@ $rules = @(
 @{Name='✔️ Allow/Block Dnscache OUTBOUND UDP/443 (HTTPS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='443';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✔️ Allow/Block Dnscache INBOUND UDP/5353 (mDNS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='5353';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✔️ Allow/Block Dnscache OUTBOUND UDP/5353 (mDNS)';Program='C:\Windows\System32\svchost.exe';Service='Dnscache';Protocol='UDP';RPort='5353';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✔️ Allow/Block Everything OUTBOUND TCP/443 (HTTPS)';Program='Any';Service='Any';Protocol='TCP';RPort='443';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
-@{Name='✔️ Allow/Block Everything OUTBOUND UDP/443 (HTTPS)';Program='Any';Service='Any';Protocol='UDP';RPort='443';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
-@{Name='✔️ Allow/Block Everything OUTBOUND TCP/80 (HTTP)';Program='Any';Service='Any';Protocol='TCP';RPort='80';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
 @{Name='✔️ Allow/Block netprofm';Program='C:\Windows\System32\svchost.exe';Service='netprofm';Protocol='Any';Action='Allow';Profile='Any';Direction='Outbound';Enabled='True'},
+@{Name='✔️ Allow/Block Everything OUTBOUND UDP/443 (HTTPS)';Program='Any';Service='Any';Protocol='UDP';RPort='443';Action='Block';Profile='Any';Direction='Outbound';Enabled='False'},
 @{Name='✖ [BLOCK IF NOT USING EXE] CompatTelRunner.exe';Program='C:\Windows\System32\CompatTelRunner.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING EXE] explorer.exe';Program='C:\Windows\explorer.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING EXE] lsass.exe';Program='C:\Windows\System32\lsass.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING EXE/UPDATE HELPER] MoUsoCoreWorker.exe';Program='C:\Windows\UUS\amd64\MoUsoCoreWorker.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING EXE] rundll32.exe';Program='C:\Windows\System32\rundll32.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING EXE] SIHClient.exe';Program='C:\Windows\System32\SIHClient.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING EXE] SystemSettings.exe';Program='C:\Windows\ImmersiveControlPanel\SystemSettings.exe';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -87,7 +70,7 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING SERVICE] UdkSvcGroup';Program='C:\Windows\System32\svchost.exe';Service='UdkSvcGroup';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] UnistackSvcGroup';Program='C:\Windows\System32\svchost.exe';Service='UnistackSvcGroup';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] W32Time';Program='C:\Windows\System32\svchost.exe';Service='W32Time';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
-@{Name='✖ [BLOCK IF NOT USING SERVICE] WaaSMedicSvc';Program='C:\Windows\System32\svchost.exe';Service='WaaSMedicSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✖ [BLOCK IF NOT USING SERVICE/UPDATE HELPER] WaaSMedicSvc';Program='C:\Windows\System32\svchost.exe';Service='WaaSMedicSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] WdiSystemHost';Program='C:\Windows\System32\svchost.exe';Service='WdiSystemHost';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] WerSvc';Program='C:\Windows\System32\svchost.exe';Service='WerSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] WFDSConMgrSvc';Program='C:\Windows\System32\svchost.exe';Service='WFDSConMgrSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
@@ -96,6 +79,18 @@ $rules = @(
 @{Name='✖ [BLOCK IF NOT USING SERVICE] wisvc';Program='C:\Windows\System32\svchost.exe';Service='wisvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] wmiApSrv';Program='C:\Windows\System32\svchost.exe';Service='wmiApSrv';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING SERVICE] WpnService';Program='C:\Windows\System32\svchost.exe';Service='WpnService';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/IDENTITY/LICENSING] ClipSVC';Program='C:\Windows\System32\svchost.exe';Service='ClipSVC';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/IDENTITY/LICENSING] LicenseManager';Program='C:\Windows\System32\svchost.exe';Service='LicenseManager';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/IDENTITY/LICENSING] OneSyncSvc';Program='C:\Windows\System32\svchost.exe';Service='OneSyncSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/IDENTITY/LICENSING] TokenBroker';Program='C:\Windows\System32\svchost.exe';Service='TokenBroker';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/IDENTITY/LICENSING] wlidsvc';Program='C:\Windows\System32\svchost.exe';Service='wlidsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/UPDATES/CERTS] BITS';Program='C:\Windows\System32\svchost.exe';Service='BITS';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/UPDATES/CERTS] CryptSvc';Program='C:\Windows\System32\svchost.exe';Service='CryptSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/UPDATES/CERTS] sppsvc';Program='C:\Windows\System32\svchost.exe';Service='sppsvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/UPDATES/CERTS] wuauserv';Program='C:\Windows\System32\svchost.exe';Service='wuauserv';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/UPDATES] DoSvc';Program='C:\Windows\System32\svchost.exe';Service='DoSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/UPDATES] InstallService';Program='C:\Windows\System32\svchost.exe';Service='InstallService';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
+@{Name='✔️ [BLOCK IF NOT USING SERVICE/UPDATES] UsoSvc';Program='C:\Windows\System32\svchost.exe';Service='UsoSvc';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
 @{Name='✖ [BLOCK IF NOT USING STUFF] LanmanServer SMB INBOUND';Program='C:\Windows\System32\svchost.exe';Service='LanmanServer';Protocol='Any';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING STUFF] TermService RDP INBOUND';Program='C:\Windows\System32\svchost.exe';Service='TermService';Protocol='Any';Action='Block';Profile='Any';Direction='Inbound'},
 @{Name='✖ [BLOCK IF NOT USING STUFF] TermService RDP OUTBOUND';Program='C:\Windows\System32\svchost.exe';Service='TermService';Protocol='Any';Action='Block';Profile='Any';Direction='Outbound'},
